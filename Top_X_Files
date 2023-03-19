@@ -1,0 +1,58 @@
+import os
+import sys
+import time
+
+# Provide directory
+dir_path = input("Enter the directory path: ")
+
+# Provide X top count
+top_x = int(input("Enter the number of files: "))
+
+# Create empty arrays 
+file_sizes = []
+mod_times = []
+word_counts = []
+
+# Search all files in directory
+for root, dirs, files in os.walk(dir_path):
+    for file_name in files:
+        file_path = os.path.join(root, file_name)
+
+        # Get file size and add to array
+        file_size = os.path.getsize(file_path)
+        file_sizes.append((file_path, file_size))
+
+        # Get file modification time and add to array
+        mod_time = os.path.getmtime(file_path)
+        mod_times.append((file_path, mod_time))
+
+        # Get file words number and add to array
+        with open(file_path, 'r') as file:
+            word_count = len(file.read().split())
+            word_counts.append((file_path, word_count))
+
+# Sort arrays 
+file_sizes.sort(key=lambda x: x[1], reverse=True)
+mod_times.sort(key=lambda x: x[1], reverse=True)
+word_counts.sort(key=lambda x: x[1], reverse=True)
+
+# Print top X files by size
+print(f"Top {top_x} by size:")
+for i, file_size in enumerate(file_sizes[:top_x]):
+    print(f"{file_size[0]} {file_size[1]}")
+    if i == top_x-1:
+        break
+
+$Print top X files by modtime
+print(f"\nTop {top_x} by modification time:")
+for i, mod_time in enumerate(mod_times[:top_x]):
+    print(f"{mod_time[0]} {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(mod_time[1]))}")
+    if i == top_x-1:
+        break
+
+$Print top X files by number of words
+print(f"\nTop {top_x} by number of words:")
+for i, word_count in enumerate(word_counts[:top_x]):
+    print(f"{word_count[0]} {word_count[1]}")
+    if i == top_x-1:
+        break
